@@ -27,6 +27,7 @@ class Block():
 
     def is_valid_block(self):
         return self.hash().startswith('0' * self.difficulty)
+    
         
 class Blockchain():
     def __init__(self, data=""):
@@ -46,13 +47,26 @@ class Blockchain():
             self.chain.pop()
             return False
         return True
+    
+    def blockchain_to_string(self):
+        l = []
+        for block in self.chain:
+            l.append(block.__dict__)
+        return json.dumps(l)
+    
+    def string_to_blockchain(string):
+        l = json.loads(string)
+        chain = Blockchain()
+        for block in l:
+            chain.add_block(Block(block["previous_hash"], block["data"]))
+        return chain
 
     
 
 
-b = Block(None, "Hello")
-chain = Blockchain("okok")
-b.proof_of_work()
-print(b.hash())
-chain.add_block(b)
-print(chain.is_valid_blockchain())
+# b = Block(None, "Hello")
+# chain = Blockchain("okok")
+# b.proof_of_work()
+# print(b.hash())
+# chain.add_block(b)
+# print(chain.is_valid_blockchain())
