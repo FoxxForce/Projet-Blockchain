@@ -33,6 +33,9 @@ class Blockchain():
     def __init__(self, data=""):
         self.chain = [Block(None, data)]
     
+    def length_blockchain(self):
+        return len(self.chain)
+    
     # verify the integrity of the blockchain
     def is_valid_blockchain(self):
         for i in range(1, len(self.chain)):
