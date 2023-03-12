@@ -15,7 +15,6 @@ class Node():
     # request the blockchain from the network
     def request_blockchain(self):
         self.client.sendto("REQBL".encode(), (ip_broadcast, self.port))
-        print("ip_broadcast: %s port: %d" % (ip_broadcast, self.port))
         return self.receive_blockchain()
 
     # broadcast the blockchain to the network
@@ -25,6 +24,9 @@ class Node():
     # receive the blockchain from the network
     def receive_blockchain(self):
         data, addr = self.client.recvfrom(50000)
+        if data.decode() == "REQBL":
+            print("pok")
+            data, addr = self.client.recvfrom(50000)
         print("received message: %s" % data.decode())
         return Blockchain.string_to_blockchain(data.decode())
 
@@ -41,13 +43,16 @@ class Node():
             if data.decode() == "REQBL":
                 self.send_blockchain(addr)
             else:
-                self.update_blockchain(lockchain.string_to_blockchain(data.decode()))
+                self.update_blockchain(Blockchain.string_to_blockchain(data.decode()))
            
     
     # update the blockchain if the new blockchain is valid and longer than the current blockchain
     def update_blockchain(self, new_blockchain):
         if new_blockchain.length_blockchain() > self.blockchain.length_blockchain() and new_blockchain.is_valid_blockchain():
             self.blockchain = new_blockchain
+            print("Blockchain updated")
+            print(self.blockchain.blockchain_to_string())
+
     
     
     

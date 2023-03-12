@@ -6,4 +6,4 @@ if __name__ == "__main__":
     chain = Blockchain("client2")
     node = Node("225.1.2.5")
     node.blockchain = node.request_blockchain()
-    run_node()
+    node.run_node()
