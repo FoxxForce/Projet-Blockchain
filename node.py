@@ -11,11 +11,12 @@ class Node():
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.client.bind(("", self.port))
+        self.blockchain = Blockchain()
 
     # request the blockchain from the network
     def request_blockchain(self):
         self.client.sendto("REQBL".encode(), (ip_broadcast, self.port))
-        return self.receive_blockchain()
+        return self.blockchain.blockchain_to_string()
 
     # broadcast the blockchain to the network
     def broadcast_blockchain(self):
@@ -28,7 +29,11 @@ class Node():
             print("pok")
             data, addr = self.client.recvfrom(50000)
         print("received message: %s" % data.decode())
-        return Blockchain.string_to_blockchain(data.decode())
+        blockchain_string = data.decode()
+        blockchain = Blockchain.string_to_blockchain(blockchain_string)
+        if blockchain.is_valid_blockchain():
+            self.blockchain = blockchain
+        return blockchain
 
     def send_blockchain(self, addr):
         self.client.sendto(self.blockchain.blockchain_to_string().encode(), addr)
