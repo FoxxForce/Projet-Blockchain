@@ -4,8 +4,8 @@ from node import *
 
 if __name__ == "__main__": 
     wallet1 = Wallet() 
-    b = Block(None, [], wallet1)
-    chain = Blockchain(wallet1)
+    b = Block(None, wallet1.get_public_key(), [])
+    chain = Blockchain(wallet1.get_public_key())
     chain.add_block(b)
     node = Node("225.1.2.4")
     node.blockchain = chain

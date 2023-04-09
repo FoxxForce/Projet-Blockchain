@@ -5,12 +5,12 @@ import json
 import rsa
 
 class Block():
-    def __init__(self, previous_hash, data, wallet):
+    def __init__(self, previous_hash, miner_public_key, data=[]):
         self.previous_hash = previous_hash
         self.data = data
         self.difficulty = 5
         self.nonce = 0
-        self.wallet = wallet.get_public_key()
+        self.miner_public_key = miner_public_key
     
     # return the string representation of the block
     def string_block(self):
@@ -47,10 +47,9 @@ class Block():
 
 class Blockchain():
 
-    def __init__(self, wallet_creator, data=[]):
+    def __init__(self, creator_public_key, data=[]):
         self.reward = 100
-        self.wallet = wallet_creator
-        self.chain = [Block(None, data, wallet_creator)]
+        self.chain = [Block(None, creator_public_key, data)]
     
     def length_blockchain(self):
         return len(self.chain)
@@ -79,10 +78,11 @@ class Blockchain():
     
     def string_to_blockchain(string):
         l = json.loads(string)
-        chain = Blockchain()
+        blockchain = Blockchain(l[0]["miner_public_key"])
+        blockchain.chain = []
         for block in l:
-            chain.add_block(Block(block["previous_hash"], block["data"]))
-        return chain
+            blockchain.add_block(Block(block["previous_hash"],  block["miner_public_key"], block["data"]))
+        return blockchain
 
     def generate_keys(self):
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
@@ -102,7 +102,6 @@ class Blockchain():
 class Wallet():
     def __init__(self):
         (self.public_key, self.private_key) = rsa.newkeys(512)
-    
     def get_public_key(self):
         return self.public_key.save_pkcs1().decode()
 
