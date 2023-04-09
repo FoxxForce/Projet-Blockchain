@@ -11,7 +11,7 @@ class Node():
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.client.bind(("", self.port))
-        self.blockchain = Blockchain()
+        self.blockchain = None
 
     # request the blockchain from the network
     def request_blockchain(self):

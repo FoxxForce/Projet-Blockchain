@@ -10,7 +10,7 @@ class Block():
         self.data = data
         self.difficulty = 5
         self.nonce = 0
-        self.wallet = wallet
+        self.wallet = wallet.get_public_key()
     
     # return the string representation of the block
     def string_block(self):
@@ -38,21 +38,19 @@ class Block():
                 return False
         return self.hash().startswith('0' * self.difficulty)
 
-    def add_transaction(self, sender, receiver, amount):
-        transaction = {"sender": sender, "receiver": receiver, "amount": amount}
-        signature = self.wallet.sign(json.dumps(transaction))
+    def add_transaction(self, sender_wallet, receiver, amount):
+        transaction = {"sender": sender_wallet.get_public_key(), "receiver": receiver, "amount": amount}
+        signature = sender_wallet.sign(json.dumps(transaction))
         transaction["signature"] = signature.hex()
         self.data.append(transaction)
     
 
 class Blockchain():
-    reward = 100
 
-    def __init__(self, data=""):
-        self.chain = [Block(None, data)]
-        self.wallet = Wallet()
-        self.current_block = Block(None, [], self.wallet)
-        self.add_transaction(None, self.wallet.get_public_key(), self.reward)
+    def __init__(self, wallet_creator, data=[]):
+        self.reward = 100
+        self.wallet = wallet_creator
+        self.chain = [Block(None, data, wallet_creator)]
     
     def length_blockchain(self):
         return len(self.chain)
@@ -66,12 +64,10 @@ class Blockchain():
     
     # add a block to the blockchain
     def add_block(self, block):
-        block.previous_hash = self.last_block().hash()
-        block.proof_of_work()
         self.chain.append(block)
-        self.current_block = Block(None, [], self.wallet)
-        self.add_transaction(None, self.wallet.get_public_key(), self.reward)
-        self.add_transaction(None, block.wallet.get_public_key(), self.reward)  # Ajout de la récompense pour le mineur
+        if not self.is_valid_blockchain() :
+            self.chain.pop()
+            return False
         return True
 
     
@@ -92,20 +88,14 @@ class Blockchain():
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
         public_key = private_key.public_key()
         return private_key, public_key
-
-    def add_transaction(self, sender, receiver, amount):
-        transaction = {"sender": sender, "receiver": receiver, "amount": amount}
-        signature = self.wallet.sign(json.dumps(transaction))
-        transaction["signature"] = signature.hex()
-        self.current_block.data.append(transaction)
     
-    def get_balance(self, address):
+    def get_balance(self, public_key):
         balance = 0
         for block in self.chain:
             for transaction in block.data:
-                if transaction["receiver"] == address:
+                if transaction["receiver"] == public_key:
                     balance += transaction["amount"]
-                if transaction["sender"] == address:
+                if transaction["sender"] == public_key:
                     balance -= transaction["amount"]
         return balance
 
