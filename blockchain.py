@@ -29,12 +29,7 @@ class Block():
 
     def is_valid_block(self):
         for transaction in self.data:
-            signature = bytes.fromhex(transaction["signature"])
-            sender_public_key = rsa.PublicKey.load_pkcs1(transaction["sender"].encode())
-            message = json.dumps(transaction, sort_keys=True)
-            try:
-                rsa.verify(message.encode(), signature, sender_public_key)
-            except rsa.pkcs1.VerificationError:
+            if not Wallet.is_valid_transaction(transaction):
                 return False
         return self.hash().startswith('0' * self.difficulty)
 
@@ -43,6 +38,7 @@ class Block():
         signature = sender_wallet.sign(json.dumps(transaction))
         transaction["signature"] = signature.hex()
         self.data.append(transaction)
+    
     
 
 class Blockchain():
@@ -107,6 +103,25 @@ class Wallet():
 
     def sign(self, message):
         return rsa.sign(message.encode(), self.private_key, 'SHA-256')
+    
+    def is_valid_transaction(transaction):
+        signature = bytes.fromhex(transaction["signature"])
+        sender_public_key = rsa.PublicKey.load_pkcs1(transaction["sender"].encode())
+        sign_temp = transaction.pop("signature", "")
+        message = json.dumps(transaction, sort_keys=True)
+        try:
+            rsa.verify(message.encode(), signature, sender_public_key)
+            transaction["signature"] = sign_temp
+            return True
+        except rsa.pkcs1.VerificationError:
+            transaction["signature"] = sign_temp
+            return False
+    
+    def create_transaction(self, receiver, amount):
+        transaction = {"sender": self.get_public_key(), "receiver": receiver, "amount": amount}
+        signature = self.sign(json.dumps(transaction, sort_keys=True))
+        transaction["signature"] = signature.hex()
+        return transaction
     
 """t1 = "Cheikou envoie 2StoopidCoins a Hicham"
 t2 = "Hicham envoie 1StoopidCoins a Cheikou"
