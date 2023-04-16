@@ -50,13 +50,23 @@ class Blockchain():
     def length_blockchain(self):
         return len(self.chain)
     
+    def is_valid_transaction(self, transaction):
+        return Wallet.is_valid_transaction(transaction) and transaction["amount"] <= self.get_balance(transaction["sender"])
+    
     # verify the integrity of the blockchain
     def is_valid_blockchain(self):
         for i in range(1, len(self.chain)):
             if self.chain[i].previous_hash != self.chain[i-1].hash() and not self.chain[i].is_valid_block():
                 return False
+            blockchain_tmp = Blockchain(self.chain[0].miner_public_key)
+            blockchain_tmp.chain = self.chain[:i]
+            for transaction in self.chain[i].data:
+                if not blockchain_tmp.is_valid_transaction(transaction):
+                    return False
         return True
     
+    
+
     # add a block to the blockchain
     def add_block(self, block):
         self.chain.append(block)
@@ -86,13 +96,15 @@ class Blockchain():
         return private_key, public_key
     
     def get_balance(self, public_key):
-        balance = 0
+        balance = 100
         for block in self.chain:
             for transaction in block.data:
                 if transaction["receiver"] == public_key:
                     balance += transaction["amount"]
                 if transaction["sender"] == public_key:
                     balance -= transaction["amount"]
+            if block.miner_public_key == public_key:
+                balance += self.reward
         return balance
 
 class Wallet():

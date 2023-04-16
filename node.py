@@ -20,7 +20,7 @@ class Node():
         self.receive_blockchain()
     # broadcast the blockchain to the network
     def broadcast_blockchain(self):
-        self.client.sendto(self.blockchain.blockchain_to_string().encode(), (ip_broadcast, self.port))
+        self.client.sendto(("SNDBL" + self.blockchain.blockchain_to_string()).encode(), (ip_broadcast, self.port))
     
     # receive the blockchain from the network
     def receive_blockchain(self):
@@ -96,7 +96,7 @@ class Node_validation(Node):
                 self.update_blockchain(Blockchain.string_to_blockchain(data.decode()[5:]))
             elif data.decode().startswith("TRNSC"):
                 transaction = json.loads(data.decode()[5:])
-                if Wallet.is_valid_transaction(transaction) and self.lock.acquire(False):
+                if self.blockchain.is_valid_transaction(transaction) and self.lock.acquire(False):
                     self.block.data.append(transaction)
                     print("Transaction added to block")
                     self.lock.release()
