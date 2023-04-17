@@ -42,7 +42,7 @@ class Node():
         print(self.blockchain.blockchain_to_string())
         while True:
             data, addr = self.client.recvfrom(50000)
-            print("received message: %s from %s" % (data.decode()[5:], addr))
+            print("received message: %s from %s" % (data.decode(), addr))
             if data.decode() == "REQBL":
                 self.send_blockchain(addr)
             elif data.decode().startswith("SNDBL"):
