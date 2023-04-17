@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 from node import * 
 
-
 if __name__ == "__main__": 
-    wallet1 = Wallet() 
-    b = Block(None, wallet1.get_public_key(), [])
-    chain = Blockchain(wallet1.get_public_key())
-    chain.add_block(b)
+    chain = Blockchain("-----BEGIN RSA PUBLIC KEY-----\nMEgCQQCNWrAHU+j4fs2TL/V7tY/ng/urX92Op8rP0XtD7QqQ+UGdi7pzsLjNsPv3\nzuVpoaXNQshH3QEXgBuLQjlyvMWlAgMBAAE=\n-----END RSA PUBLIC KEY-----\n")
     node = Node("225.1.2.4")
     node.blockchain = chain
     node.run_node()

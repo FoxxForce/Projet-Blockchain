@@ -22,7 +22,6 @@ class Block():
     
     # search a valid nonce for the block
     def proof_of_work(self):
-        self.nonce = 0
         while not self.hash().startswith('0' * self.difficulty):
             self.nonce += 1
         return self.nonce
@@ -46,6 +45,8 @@ class Blockchain():
     def __init__(self, creator_public_key, data=[]):
         self.reward = 100
         self.chain = [Block(None, creator_public_key, data)]
+        self.chain[0].nonce = 547640
+        self.chain[0].proof_of_work() 
     
     def length_blockchain(self):
         return len(self.chain)
@@ -88,6 +89,7 @@ class Blockchain():
         blockchain.chain = []
         for block in l:
             blockchain.add_block(Block(block["previous_hash"],  block["miner_public_key"], block["data"]))
+            blockchain.chain[-1].nonce = block["nonce"]
         return blockchain
 
     def generate_keys(self):

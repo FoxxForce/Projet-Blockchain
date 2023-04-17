@@ -75,7 +75,7 @@ class Node_validation(Node):
         self.block.proof_of_work()
         self.blockchain.add_block(self.block)
         self.broadcast_blockchain()
-        self.block = Block(self.blockchain.chain[-1].hash(), self.public_key)
+        self.block = Block(self.blockchain.chain[-1].hash(), self.public_key, [])
 
     def run_node(self):
         print("Node running on port %d" % self.port)
