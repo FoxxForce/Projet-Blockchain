@@ -3,9 +3,6 @@ from node import *
 from flask import Flask, jsonify
 
 app = Flask(__name__)
-wallet2 = Wallet()
-b = Block(None, "Hello", wallet2.get_public_key())
-chain = Blockchain("client2")
 node = Node("225.1.2.5")
 node.request_blockchain()
 
