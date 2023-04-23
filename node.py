@@ -72,6 +72,7 @@ class Node_validation(Node):
         self.lock = threading.Lock()
     
     def thread_mining(self):
+        print("mining block validation")
         self.block.proof_of_work()
         self.blockchain.add_block(self.block)
         self.broadcast_blockchain()
