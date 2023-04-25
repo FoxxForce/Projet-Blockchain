@@ -133,6 +133,8 @@ class Blockchain():
         for block in l:
             b = json.loads(block)
             blockchain.add_block(Block(b["previous_hash"], []))
+            blockchain.chain[-1].difficulty = b["difficulty"]
+            blockchain.chain[-1].nonce = b["nonce"]
             for transaction in b["data"]:
                 blockchain.chain[-1].data.append(Transaction.dict_to_transaction(transaction))
         return blockchain
