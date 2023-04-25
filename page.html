@@ -27,7 +27,6 @@
 				<th>Data</th>
 				<th>Difficulty</th>
 				<th>Nonce</th>
-				<th>Miner Public Key</th>
 				<th>Details</th>
 			</tr>
 		</thead>
@@ -38,15 +37,18 @@
 		fetch("http://localhost:5000/blockchain")
 			.then(response => response.json())
 			.then(data => {
+				console.log("ssss")
+				
                 data = JSON.parse(data)
-				data.forEach(block => {             
+				console.log(data)
+				data.forEach(block => {      
+					block = JSON.parse(block)       
 					const row = document.createElement("tr");
 					row.innerHTML = `
 						<td>${block.previous_hash}</td>
-						<td>${block.data.length} transaction(s)</td>
+						<td>${block["data"].length} transaction(s)</td>
 						<td>${block.difficulty}</td>
 						<td>${block.nonce}</td>
-						<td>${block.miner_public_key}</td>
 						<td><button onclick="toggleDetails(event)">Show Details</button></td>
 					`;
 
@@ -55,10 +57,15 @@
 					block.data.forEach(transaction => {
                         const transactionElement = document.createElement("div");
                         transactionElement.classList.add("transaction");
-                        const text = "<p>Sender: " + transaction["sender"] + "</p>" +
-                                    "<p>Receiver: " + transaction["receiver"] + "</p>" +
-                                    "<p>Amount: " + transaction["amount"] + "</p>" +
-                                    "<p>Signature: " + transaction["signature"] + "</p>"
+                        const text = "<p>prodution_place: " + transaction["prodution_place"] + "</p>" +
+                                    "<p>production_date: " + transaction["production_date"] + "</p>" +
+                                    "<p>product_name: " + transaction["product_name"] + "</p>" +
+                                    "<p>batch_id: " + transaction["batch_id"] + "</p>" +
+									"<p>current_location: " + transaction["current_location"] + "</p>" +
+                                    "<p>date: " + transaction["date"] + "</p>" +
+                                    "<p>transported_to: " + transaction["transported_to"] + "</p>" +
+                                    "<p>sender_public_key: " + transaction["sender_public_key"] + "</p>" +
+									"<p>signature: " + transaction["signature"] + "</p>"
                         transactionElement.innerHTML = text;
                         details.appendChild(transactionElement);
                     });

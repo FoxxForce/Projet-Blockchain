@@ -16,6 +16,7 @@ def add_cors_headers(response):
 @app.route('/blockchain', methods=['GET'])
 def get_blockchain():
     node.request_blockchain()
+    print(node.blockchain.blockchain_to_string())
     return jsonify(node.blockchain.blockchain_to_string())
 
 if __name__ == "__main__":
