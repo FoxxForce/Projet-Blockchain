@@ -48,10 +48,10 @@ class Node():
             elif data.decode().startswith("SNDBL"):
                 self.update_blockchain(Blockchain.string_to_blockchain(data.decode()[5:]))
 
-    def send_transaction(ip, sender_wallet, receiver, amount):
+    def send_transaction(transaction):
         client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        client.sendto(("TRNSC" + json.dumps(sender_wallet.create_transaction(receiver, amount))).encode(), (ip_broadcast, port))
+        client.sendto(("TRNSC" + json.dumps(transaction.to_dict())).encode(), (ip_broadcast, port))
         client.close()
         
     
@@ -62,13 +62,12 @@ class Node():
             print("Blockchain updated")
 
 class Node_validation(Node):
-    def __init__(self, ip, public_key, nb_transactions):
+    def __init__(self, ip, nb_transactions):
         self.nb_transactions = nb_transactions
-        self.public_key = public_key
         super().__init__(ip)
         self.request_blockchain()
         self.mining = False
-        self.block = Block(self.blockchain.chain[-1].hash(), self.public_key)
+        self.block = Block(self.blockchain.chain[-1].hash())
         self.lock = threading.Lock()
     
     def thread_mining(self):
@@ -76,7 +75,7 @@ class Node_validation(Node):
         self.block.proof_of_work()
         self.blockchain.add_block(self.block)
         self.broadcast_blockchain()
-        self.block = Block(self.blockchain.chain[-1].hash(), self.public_key, [])
+        self.block = Block(self.blockchain.chain[-1].hash(), [])
 
     def run_node(self):
         print("Node running on port %d" % self.port)
@@ -96,8 +95,14 @@ class Node_validation(Node):
             elif data.decode().startswith("SNDBL"):
                 self.update_blockchain(Blockchain.string_to_blockchain(data.decode()[5:]))
             elif data.decode().startswith("TRNSC"):
-                transaction = json.loads(data.decode()[5:])
-                if self.blockchain.is_valid_transaction(transaction) and self.lock.acquire(False):
+                transaction = None
+                try :
+                    transaction = Transaction.dict_to_transaction(json.loads(data.decode()[5:]))
+                    print(type(transaction))
+                except:
+                    print("Invalid transaction")
+                    continue
+                if transaction.is_valid_transaction() and self.lock.acquire(False):
                     self.block.data.append(transaction)
                     print("Transaction added to block")
                     self.lock.release()
