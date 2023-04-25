@@ -13,7 +13,7 @@ class Transaction:
         self.current_location = current_location
         self.date = date
         self.transported_to = transported_to 
-        self.sender_public_key = sender_public_key.save_pkcs1().decode()
+        self.sender_public_key = sender_public_key
         self.signature = signature
 
 
@@ -44,14 +44,15 @@ class Transaction:
         }, sort_keys=True)
     
     def dict_to_transaction(d):
-        return Transaction(d["prodution_place"], d["production_date"], d["product_name"], d["batch_id"], 
-                         d["current_location"], d["date"], d["transported_to"],d["sender_public_key"], d["signature"])
+        return Transaction(prodution_place=d["prodution_place"], production_date=d["production_date"], product_name=d["product_name"], batch_id=d["batch_id"], 
+                         current_location=d["current_location"], date=d["date"], transported_to=d["transported_to"],sender_public_key=d["sender_public_key"], signature=d["signature"])
 
     def sign_transaction(self, private_key):
         self.signature = rsa.sign(self.message().encode(), private_key, 'SHA-256').hex()
         
     def is_valid_transaction(self):
         signature = bytes.fromhex(self.signature)
+        print(self.sender_public_key)
         sender_public_key = rsa.PublicKey.load_pkcs1(self.sender_public_key.encode())
         message = self.message()
         try:
