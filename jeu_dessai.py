@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from node import * 
-
+(public_key, private_key) = rsa.newkeys(512)
 # BLOC n°1
 # med fabr
 transaction_1 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -9,6 +9,7 @@ transaction_1 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='PziferMedFacility', transported_to='',
                             date='01/01/2023')
 transaction_1.sign_transaction(private_key)
+Node.send_transaction(transaction_1)
 
 # paquet transp au distrib
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -17,6 +18,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='PziferMedFacility', transported_to='JonathanDistrib',
                             date='01/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 # med fabr
 transaction_4 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -25,6 +27,7 @@ transaction_4 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='PziferMedFacility', transported_to='',
                             date='01/01/2023')
 transaction_4.sign_transaction(private_key)
+Node.send_transaction(transaction_4)
 
 # paquet transp au distrib
 transaction_5 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -33,6 +36,7 @@ transaction_5 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='PziferMedFacility', transported_to='JosephDistrib',
                             date='01/01/2023')
 transaction_5.sign_transaction(private_key)
+Node.send_transaction(transaction_5)
 
 
 
@@ -46,6 +50,7 @@ transaction_1 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='JosephDistrib', transported_to='',
                             date='02/01/2023')
 transaction_1.sign_transaction(private_key)
+Node.send_transaction(transaction_1)
 
 # paquet transp au magasin
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -54,6 +59,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='JosephDistrib', transported_to='MartWall',
                             date='02/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 
 
@@ -67,6 +73,7 @@ transaction_4 = Transaction(prodution_place='DoliMedFacility', production_date='
                             current_location='DoliMedFacility', transported_to='',
                             date='03/01/2023')
 transaction_4.sign_transaction(private_key)
+Node.send_transaction(transaction_4)
 
 # paquet transp au distrib
 transaction_1 = Transaction(prodution_place='DoliMedFacility', production_date='01/01/2023', 
@@ -75,6 +82,7 @@ transaction_1 = Transaction(prodution_place='DoliMedFacility', production_date='
                             current_location='DoliMedFacility', transported_to='JonathanDistrib',
                             date='03/01/2023')
 transaction_1.sign_transaction(private_key)
+Node.send_transaction(transaction_1)
 
 
 
@@ -88,6 +96,7 @@ transaction_1 = Transaction(prodution_place='DoliMedFacility', production_date='
                             current_location='JonathanDistrib', transported_to='',
                             date='04/01/2023')
 transaction_1.sign_transaction(private_key)
+Node.send_transaction(transaction_1)
 
 # paquet arrivé au distrib
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -96,6 +105,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='JonathanDistrib', transported_to='',
                             date='04/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 # paquet transp au magasin
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -104,6 +114,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='JonathanDistrib', transported_to='MartWall',
                             date='04/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 # paquet transp au magasin
 transaction_2 = Transaction(prodution_place='DoliMedFacility', production_date='01/01/2023', 
@@ -112,6 +123,7 @@ transaction_2 = Transaction(prodution_place='DoliMedFacility', production_date='
                             current_location='JonathanDistrib', transported_to='MartWall',
                             date='04/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 
 
@@ -124,6 +136,7 @@ transaction_1 = Transaction(prodution_place='DoliMedFacility', production_date='
                             current_location='MartWall', transported_to='',
                             date='04/01/2023')
 transaction_1.sign_transaction(private_key)
+Node.send_transaction(transaction_1)
 
 # paquet arrivé au magasin
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -132,6 +145,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='MartWall', transported_to='',
                             date='04/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 # paquet arrivé au magasin
 transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date='01/01/2023', 
@@ -140,6 +154,7 @@ transaction_2 = Transaction(prodution_place='PziferMedFacility', production_date
                             current_location='MartWall', transported_to='',
                             date='04/01/2023')
 transaction_2.sign_transaction(private_key)
+Node.send_transaction(transaction_2)
 
 
 
