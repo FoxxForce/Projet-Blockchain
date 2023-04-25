@@ -72,11 +72,13 @@ class Node_validation(Node):
     
     def thread_mining(self):
         print("mining block validation")
-        self.block.proof_of_work()
-        self.blockchain.add_block(self.block)
-        self.broadcast_blockchain()
+        new_block = Block(self.blockchain.chain[-1].hash(), [x for x in self.block.data])
         self.block = Block(self.blockchain.chain[-1].hash(), [])
-
+        self.lock.release()
+        new_block.proof_of_work()
+        self.blockchain.add_block(new_block)
+        self.broadcast_blockchain()
+        
     def run_node(self):
         print("Node running on port %d" % self.port)
         print(self.blockchain.blockchain_to_string())
@@ -86,7 +88,6 @@ class Node_validation(Node):
                 t = threading.Thread(target=self.thread_mining)
                 self.lock.acquire()
                 t.start()
-                self.lock.release()
                 self.mining = False
             data, addr = self.client.recvfrom(50000)
             print("received message: %s from %s" % (data.decode(), addr))
@@ -102,7 +103,7 @@ class Node_validation(Node):
                 except:
                     print("Invalid transaction")
                     continue
-                if transaction.is_valid_transaction() and self.lock.acquire(False):
+                if transaction.is_valid_transaction() and self.lock.acquire():
                     self.block.data.append(transaction)
                     print("Transaction added to block")
                     self.lock.release()
